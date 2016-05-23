@@ -57,9 +57,9 @@ def testStandingsBeforeMatches():
                          "they have played any matches.")
     elif len(standings) > 2:
         raise ValueError("Only registered players should appear in standings.")
-    if len(standings[0]) != 4:
-        raise ValueError("Each playerStandings row should have four columns.")
-    [(id1, name1, wins1, matches1), (id2, name2, wins2, matches2)] = standings
+    if len(standings[0]) != 5:
+        raise ValueError("Each playerStandings row should have five columns.")
+    [(id1, name1, wins1, matches1, score1), (id2, name2, wins2, matches2, score2)] = standings
     if matches1 != 0 or matches2 != 0 or wins1 != 0 or wins2 != 0:
         raise ValueError(
             "Newly registered players should have no matches or wins.")
@@ -76,7 +76,7 @@ def testReportMatches():
     deleteMatches()
     deletePlayers()
     registerPlayer("Bruno Walton")
-    registerPlayer("Boots O'Neal")
+    registerPlayer("Boots ONeal")
     registerPlayer("Cathy Burton")
     registerPlayer("Diane Grant")
     standings = playerStandings()
@@ -84,7 +84,7 @@ def testReportMatches():
     reportMatch(id1, id2)
     reportMatch(id3, id4)
     standings = playerStandings()
-    for (i, n, w, m) in standings:
+    for (i, n, w, m, s) in standings:
         if m != 1:
             raise ValueError("Each player should have one match recorded.")
         if i in (id1, id3) and w != 1:
@@ -96,12 +96,13 @@ def testReportMatches():
     standings = playerStandings()
     if len(standings) != 4:
         raise ValueError("Match deletion should not change number of players in standings.")
-    for (i, n, w, m) in standings:
+    for (i, n, w, m, s) in standings:
         if m != 0:
             raise ValueError("After deleting matches, players should have zero matches recorded.")
         if w != 0:
             raise ValueError("After deleting matches, players should have zero wins recorded.")
     print "8. After match deletion, player standings are properly reset.\n9. Matches are properly deleted."
+
 
 def testPairings():
     """
@@ -145,6 +146,25 @@ def testPairings():
             raise ValueError(
                 "After one match, players with one win should be paired.")
     print "10. After one match, players with one win are properly paired."
+
+    deleteMatches()
+    pairings = swissPairings()
+    for chosen in pairings:
+        cid1,_,cid2,_=chosen
+        reportMatch(cid1,cid2)
+
+    pairings = swissPairings()
+    for chosen in pairings:
+        cid1,_,cid2,_=chosen
+        reportMatch(cid1,cid2)
+
+
+    pairings = swissPairings()
+    for chosen in pairings:
+        cid1,_,cid2,_=chosen
+        reportMatch(cid1,cid2)
+        print playerStandings()
+        print "\n"
 
 
 if __name__ == '__main__':
